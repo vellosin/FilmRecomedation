@@ -4,7 +4,6 @@ backend/**/*.pyc
 backend/data/raw/*.csv
 backend/data/processed/*.csv
 backend/data/processed/*.json
-backend/artifacts/*.joblib
-backend/artifacts/*.npy
-backend/artifacts/*.json
+backend/artifacts/*
+!backend/artifacts/.gitkeep
 frontend/node_modules/
