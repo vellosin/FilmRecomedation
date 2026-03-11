@@ -2,6 +2,66 @@
 
 Aplicacao local de recomendacao de filmes com backend em FastAPI, frontend em JavaScript modular e busca vetorial local com FAISS.
 
+## Stack
+
+- FastAPI no backend
+- JavaScript modular no frontend
+- TensorFlow/Keras para gerar embeddings
+- FAISS para busca vetorial local
+- TMDB via Kaggle como fonte principal dos dados
+
+## O que o projeto faz
+
+- baixa e organiza o dataset TMDB
+- preprocessa filmes, elenco, direcao, roteiro, producao e reviews
+- treina um autoencoder para gerar embeddings de 64 dimensoes
+- cria um indice vetorial local com FAISS
+- recomenda filmes por similaridade e por perfil
+- reaproveita feedback persistido entre sessoes
+
+## Demo rapida
+
+1. iniciar o backend
+2. iniciar o frontend
+3. clicar em baixar dataset
+4. clicar em treinar modelo
+5. pesquisar filmes e marcar curtidos ou favoritos
+6. pedir recomendacoes para o perfil
+
+## Pre-requisitos
+
+- Python 3.12 ou compativel com as dependencias do projeto
+- Node.js para rodar o frontend
+- credenciais do Kaggle configuradas localmente para baixar a base
+
+## Como rodar localmente
+
+### Backend
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python scripts/download_dataset.py
+python scripts/train_model.py
+uvicorn app.main:app --reload --port 8000
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+### Enderecos locais
+
+- frontend: http://localhost:3000
+- backend: http://localhost:8000
+- health check: http://localhost:8000/health
+
 ## Visao geral
 
 Este projeto junta tres ideias que apareceram ao longo do modulo 1 do curso:
@@ -113,8 +173,9 @@ O que ele faz:
 
 - padroniza `movie_id`
 - escolhe colunas equivalentes mesmo quando o CSV muda de nome
-- agrega ate 6 nomes de elenco por filme
+- agrega ate 10 nomes de elenco por filme
 - agrega ate 3 diretores
+- agrega roteiristas e produtores para reforcar o time criativo do filme
 - agrega reviews de forma resumida e menos ruidosa
 - limpa HTML, links, caracteres estranhos e excesso de espacos
 - reduz o tamanho de overview e review para evitar ruido exagerado
@@ -127,7 +188,7 @@ Saida principal:
 
 O `ModelTrainingService` monta features em blocos:
 
-- texto: `title`, `overview`, `genres_text`, `cast_text`, `director_text`, `review_text`
+- texto: `title`, `overview`, `genres_text`, `cast_text`, `director_text`, `writer_text`, `producer_text`, `review_text`
 - numericos: `vote_average`, `popularity`, `runtime`, `release_year`, `review_score`, `review_count`
 
 Cada bloco textual passa por TF-IDF com peso proprio. Depois:
@@ -178,12 +239,13 @@ No perfil, a logica atual:
 
 1. junta likes e favorites como sinais positivos
 2. usa dislikes como penalizacao
-3. mescla o perfil atual do frontend com o feedback salvo no backend para o usuario
-4. aplica pesos diferentes por acao e um pequeno ganho por recencia
-5. monta um vetor medio do perfil
-6. consulta o indice vetorial
-7. remove itens ja vistos
-8. reordena resultados com pesos extras de intersecao de elenco
+3. usa o perfil atual como prioridade quando ele ja e suficientemente forte
+4. so reaproveita o feedback salvo no backend para complementar perfis fracos ou incompletos
+5. aplica pesos diferentes por acao e um pequeno ganho por recencia
+6. monta um vetor medio do perfil
+7. consulta o indice vetorial
+8. remove itens ja vistos
+9. reordena resultados com pesos extras de intersecao de elenco
 
 Isso produz uma recomendacao por conteudo enriquecida por heuristicas simples de perfil.
 
@@ -269,25 +331,20 @@ Leitura pratica:
 - ranking melhorando mesmo com pequena piora de loss pode ser aceitavel, porque o objetivo final do sistema e recomendar melhor
 - `NDCG` e `MRR` costumam ser as metricas mais uteis para avaliar a qualidade do topo da lista
 
-## Como rodar
+## Endpoints principais
 
-### Backend
-
-```bash
-cd backend
-pip install -r requirements.txt
-python scripts/download_dataset.py
-python scripts/train_model.py
-uvicorn app.main:app --reload --port 8000
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm start
-```
+- `GET /health`
+- `POST /dataset/download`
+- `GET /dataset/status`
+- `POST /train`
+- `GET /training/status`
+- `GET /training/report`
+- `GET /movies`
+- `GET /movies/{movie_id}`
+- `POST /recommendations/by-movie`
+- `POST /recommendations/by-profile`
+- `POST /feedback`
+- `POST /feedback/clear`
 
 ## Melhorias futuras mais importantes
 
