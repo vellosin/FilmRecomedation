@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recomendador de Filmes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Projeto pratico de IA aplicada</p>
+        <h1>Recomendador de filmes treinado com TMDB</h1>
+        <p class="hero-copy">
+          Catalogo local, treino do modelo e recomendacoes personalizadas em uma interface inspirada nos exemplos do curso.
+        </p>
+      </div>
+      <div class="status-card" id="training-status-card">
+        <h2>Status do modelo</h2>
+        <p id="training-status-message">Aguardando verificacao do backend...</p>
+        <div class="status-actions">
+          <button id="download-dataset-button">Baixar dataset</button>
+          <button id="train-model-button">Treinar modelo</button>
+          <button id="refresh-status-button" class="ghost">Atualizar status</button>
+        </div>
+        <div class="training-kpis" id="training-kpis"></div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel search-panel">
+        <div class="section-header">
+          <h2>Busca de filmes</h2>
+          <p>Pesquise por titulo e veja apenas os filmes que combinam com o texto informado.</p>
+        </div>
+
+        <form id="search-form" class="search-form">
+          <input id="search-input" type="search" placeholder="Digite um titulo de filme" />
+          <button type="submit">Buscar</button>
+        </form>
+
+        <div id="search-results" class="movie-grid"></div>
+      </section>
+
+      <section class="panel details-panel">
+        <div class="section-header">
+          <h2>Detalhes e perfil</h2>
+          <p>Selecione um filme para ver o contexto e alimentar o seu perfil local.</p>
+        </div>
+
+        <div id="movie-details" class="movie-details empty-state">
+          Selecione um filme para visualizar os detalhes.
+        </div>
+
+        <div class="profile-panel">
+          <h3>Seu perfil local</h3>
+          <div class="profile-columns">
+            <div>
+              <strong>Curtidos</strong>
+              <ul id="liked-list"></ul>
+            </div>
+            <div>
+              <strong>Favoritos</strong>
+              <ul id="favorite-list"></ul>
+            </div>
+            <div>
+              <strong>Descartados</strong>
+              <ul id="disliked-list"></ul>
+            </div>
+          </div>
+          <div class="status-actions profile-actions">
+            <button id="recommend-profile-button">Recomendar para meu perfil</button>
+            <button id="clear-profile-button" class="ghost">Limpar perfil</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="panel recommendations-panel">
+      <div class="section-header">
+        <h2>Recomendacoes</h2>
+        <p>Monte seu perfil curtindo ou favoritando filmes e receba sugestoes personalizadas.</p>
+      </div>
+      <div class="status-actions recommendation-actions">
+        <button id="recommend-by-movie-button">Sugerir para meu perfil</button>
+      </div>
+      <p id="recommendation-hint" class="recommendation-hint">Curta ou favorite pelo menos 3 filmes antes de pedir recomendacoes. Se quiser, voce pode adicionar mais filmes para melhorar o perfil.</p>
+      <div id="recommendations-results" class="movie-grid"></div>
+    </section>
+
+    <section class="panel training-report-panel">
+      <div class="section-header">
+        <h2>Relatorio de treino</h2>
+        <p>Resumo da rede, curvas de treino e pesos aplicados nas variaveis.</p>
+      </div>
+      <div class="report-layout">
+        <div class="report-card">
+          <h3>Resumo</h3>
+          <div id="training-summary" class="report-grid"></div>
+        </div>
+        <div class="report-card">
+          <h3>Ranking offline</h3>
+          <div id="training-ranking-metrics" class="parameter-list"></div>
+        </div>
+        <div class="report-card">
+          <h3>Curva de perda</h3>
+          <div id="loss-chart" class="chart-card empty-chart">Sem dados de treino ainda.</div>
+        </div>
+        <div class="report-card">
+          <h3>Validacao</h3>
+          <div id="validation-chart" class="chart-card empty-chart">Sem dados de treino ainda.</div>
+        </div>
+        <div class="report-card">
+          <h3>Pesos dos blocos de texto</h3>
+          <div id="text-weights" class="parameter-list"></div>
+        </div>
+        <div class="report-card">
+          <h3>Pesos numericos</h3>
+          <div id="numeric-weights" class="parameter-list"></div>
+        </div>
+        <div class="report-card">
+          <h3>Hiperparametros</h3>
+          <div id="training-hyperparameters" class="parameter-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

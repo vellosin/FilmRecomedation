@@ -1,0 +1,10 @@
+backend/.venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/data/raw/*.csv
+backend/data/processed/*.csv
+backend/data/processed/*.json
+backend/artifacts/*.joblib
+backend/artifacts/*.npy
+backend/artifacts/*.json
+frontend/node_modules/

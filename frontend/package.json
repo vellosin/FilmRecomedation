@@ -1,0 +1,11 @@
+{
+  "name": "movie-recommendation-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "browser-sync start --server --files './**/*' --port 3000"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4"
+  }
+}
