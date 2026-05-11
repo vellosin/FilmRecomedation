@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P6DBK0HCDJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-P6DBK0HCDJ');
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Recomendador de Filmes</title>
@@ -16,12 +26,12 @@
         <p class="eyebrow">Projeto pratico de IA aplicada</p>
         <h1>Recomendador de filmes treinado com TMDB</h1>
         <p class="hero-copy">
-          Catalogo local, treino do modelo e recomendacoes personalizadas em uma interface inspirada nos exemplos do curso.
+          Catalogo local e recomendacoes personalizadas rodando no navegador, com modelo treinado offline e artefatos estaticos publicados no site.
         </p>
       </div>
       <div class="status-card" id="training-status-card">
         <h2>Status do modelo</h2>
-        <p id="training-status-message">Aguardando verificacao do backend...</p>
+        <p id="training-status-message">Carregando artefatos locais do modelo...</p>
         <div class="status-actions">
           <button id="download-dataset-button">Baixar dataset</button>
           <button id="train-model-button">Treinar modelo</button>
@@ -95,7 +105,7 @@
     <section class="panel training-report-panel">
       <div class="section-header">
         <h2>Relatorio de treino</h2>
-        <p>Resumo da rede, curvas de treino e pesos aplicados nas variaveis.</p>
+          <p>Resumo do ultimo treino offline usado para gerar os artefatos publicados no navegador.</p>
       </div>
       <div class="report-layout">
         <div class="report-card">
@@ -130,6 +140,7 @@
     </section>
   </div>
 
-  <script type="module" src="./index.js"></script>
+  <script src="./recomendador-config.js?v=20260311-2"></script>
+  <script type="module" src="./index.js?v=20260511-3"></script>
 </body>
 </html>

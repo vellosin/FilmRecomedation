@@ -1,6 +1,11 @@
 export class ApiService {
-  constructor(baseUrl = 'http://localhost:8000') {
-    this.baseUrl = baseUrl;
+  constructor(baseUrl) {
+    const configuredBase =
+      baseUrl ||
+      (window.VELLOSOL_RECOMENDADOR && window.VELLOSOL_RECOMENDADOR.apiBaseUrl) ||
+      '/apps/recomendador-filmes-unipds/api';
+
+    this.baseUrl = String(configuredBase).replace(/\/$/, '');
   }
 
   async request(path, options = {}) {

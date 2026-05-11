@@ -44,7 +44,10 @@ export class MovieDetailsView {
       return;
     }
     target.innerHTML = ids.length
-      ? ids.map((id) => `<li>${allMoviesById.get(id)?.title || `Filme ${id}`}</li>`).join('')
+      ? ids.map((id) => {
+        const normalizedId = Number(id);
+        return `<li>${allMoviesById.get(normalizedId)?.title || `Filme ${id}`}</li>`;
+      }).join('')
       : '<li>Nenhum item ainda.</li>';
   }
 

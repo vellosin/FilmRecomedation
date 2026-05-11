@@ -21,7 +21,24 @@ export class RecommendationController {
     recommendProfileButton?.addEventListener('click', () => this.recommendByProfile());
     clearProfileButton?.addEventListener('click', () => this.clearProfile());
 
+    this.hydrateMovieCache();
     this.renderProfile(this.sessionService.getProfile());
+  }
+
+  async hydrateMovieCache() {
+    if (typeof this.apiService.getCatalog !== 'function') {
+      return;
+    }
+
+    try {
+      const { items } = await this.apiService.getCatalog();
+      items.forEach((movie) => {
+        this.movieCache.set(Number(movie.movie_id), movie);
+      });
+      this.renderProfile(this.sessionService.getProfile());
+    } catch {
+      // Ignore hydration failures and fall back to the current on-demand movie cache.
+    }
   }
 
   async showMovie(movieId) {
@@ -84,9 +101,56 @@ export class RecommendationController {
     this.movieDetailsView.updateProfileLists(profile, this.movieCache);
     this.searchController?.updateProfile(profile);
     this.renderRecommendations(this.currentRecommendations);
+    this.ensureProfileMoviesLoaded(profile);
     const positiveCount = new Set([...profile.likes, ...profile.favorites]).size;
     if (positiveCount < 3) {
       this.showHint(`Curta ou favorite pelo menos 3 filmes antes de pedir recomendacoes. Atualmente: ${positiveCount}/3. Se quiser, voce pode adicionar mais filmes para melhorar o perfil.`);
+    }
+  }
+
+  async ensureProfileMoviesLoaded(profile) {
+    const profileMovieIds = [...new Set([
+      ...(profile?.likes || []),
+      ...(profile?.favorites || []),
+      ...(profile?.dislikes || []),
+    ])];
+
+    if (typeof this.apiService.getCatalog === 'function') {
+      try {
+        const { byId } = await this.apiService.getCatalog();
+        profileMovieIds.forEach((movieId) => {
+          const movie = byId.get(Number(movieId));
+          if (movie) {
+            this.movieCache.set(Number(movie.movie_id), movie);
+          }
+        });
+        this.movieDetailsView.updateProfileLists(this.sessionService.getProfile(), this.movieCache);
+        return;
+      } catch {
+        // Fall back to loading profile movies individually when the catalog is unavailable.
+      }
+    }
+
+    if (typeof this.apiService.getMovie !== 'function') {
+      return;
+    }
+
+    const missingMovieIds = profileMovieIds.filter((movieId) => !this.movieCache.has(Number(movieId)));
+
+    if (!missingMovieIds.length) {
+      return;
+    }
+
+    try {
+      const movies = await Promise.all(
+        missingMovieIds.map((movieId) => this.apiService.getMovie(movieId).catch(() => null))
+      );
+      movies.filter(Boolean).forEach((movie) => {
+        this.movieCache.set(Number(movie.movie_id), movie);
+      });
+      this.movieDetailsView.updateProfileLists(this.sessionService.getProfile(), this.movieCache);
+    } catch {
+      // Ignore cache hydration failures. The profile will still work with fallback movie ids.
     }
   }
 

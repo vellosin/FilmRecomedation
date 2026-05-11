@@ -11,6 +11,10 @@ export class TrainingController {
       onTrain: () => this.trainModel(),
       onRefresh: () => this.refreshStatus(),
     });
+
+    if (this.apiService.isBrowserRuntime) {
+      this.trainingView.setBrowserRuntimeMode();
+    }
   }
 
   async refreshStatus() {

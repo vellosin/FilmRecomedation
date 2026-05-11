@@ -1,0 +1,11 @@
+{
+  "mode": "browser",
+  "catalog_count": 9770,
+  "embedding_shape": [
+    9770,
+    64
+  ],
+  "embedding_dtype": "float32",
+  "training_available": true,
+  "message": "Modelo treinado offline e pronto para recomendacoes no navegador."
+}

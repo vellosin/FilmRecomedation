@@ -20,6 +20,20 @@ export class TrainingView {
     this.refreshButton?.addEventListener('click', onRefresh);
   }
 
+  setBrowserRuntimeMode() {
+    if (this.downloadButton) {
+      this.downloadButton.disabled = true;
+      this.downloadButton.textContent = 'Dataset offline';
+      this.downloadButton.title = 'O dataset e o treino ficam restritos ao pipeline offline.';
+    }
+
+    if (this.trainButton) {
+      this.trainButton.disabled = true;
+      this.trainButton.textContent = 'Treino offline';
+      this.trainButton.title = 'A versao publica usa artefatos pre-treinados no navegador.';
+    }
+  }
+
   setMessage(message) {
     if (this.statusMessage) {
       this.statusMessage.textContent = message;
